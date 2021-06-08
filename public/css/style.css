@@ -5,3 +5,7 @@
     color: white;
     background-color: navy;
 }
+
+li {
+    padding-right: 10px;
+}
