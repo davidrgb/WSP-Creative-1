@@ -4,12 +4,22 @@ import * as FirebaseController from './firebase_controller.js'
 export let currentUser
 
 export function addEventListeners() {
+
     Element.formSignin.addEventListener('submit', async e => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
         try {
             await FirebaseController.signIn(email, password);
+            Element.modalSigninForm.hide();
+        } catch (e) {
+            console.log(e);
+        }
+    });
+
+    Element.menuSignout.addEventListener('click', () => {
+        try {
+            FirebaseController.signOut();
         } catch (e) {
             console.log(e);
         }
