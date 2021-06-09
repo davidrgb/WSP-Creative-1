@@ -1,8 +1,8 @@
 import * as Element from './element.js'
 
-function info(title, body, closeModal) {
+export function info(title, body, closeModal) {
     if (closeModal) closeModal.hide();
     Element.modalInfoboxTitleElement.innerHTML = title;
-    Element.modalInfoboxBodyElement = body;
+    Element.modalInfoboxBodyElement.innerHTML = body;
     Element.modalInfobox.show();
 }

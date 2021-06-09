@@ -1,5 +1,8 @@
 import * as Element from '../viewpage/element.js'
 import * as FirebaseController from './firebase_controller.js'
+import * as Constant from '../model/constant.js'
+import * as Util from '../viewpage/util.js'
+import * as Route from './route.js'
 
 export let currentUser
 
@@ -13,7 +16,8 @@ export function addEventListeners() {
             await FirebaseController.signIn(email, password);
             Element.modalSigninForm.hide();
         } catch (e) {
-            console.log(e);
+            if(Constant.DEV) console.log(e);
+            Util.info('Sign In Error', JSON.stringify(e), Element.modalSigninForm);
         }
     });
 
@@ -35,6 +39,10 @@ export function addEventListeners() {
             elements = document.getElementsByClassName('modal-menus-post-auth');
             for (let i = 0; i < elements.length; i++)
                 elements[i].style.display = 'block';
+
+            const pathname = window.location.pathname;
+            const href = window.location.href;
+            Route.routing(pathname, href);
         } else {
             // sign out
             currentUser = null;
@@ -44,6 +52,9 @@ export function addEventListeners() {
             elements = document.getElementsByClassName('modal-menus-post-auth');
             for (let i = 0; i < elements.length; i++)
                 elements[i].style.display = 'none';
+            
+            history.pushState(null, null, Route.routePath.HOME);
+            Element.root.innerHTML = '<h1>Signed Out</h1>'
         }
     });
 }

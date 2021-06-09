@@ -1,5 +1,6 @@
 import * as Element from './element.js'
 import * as Route from '../controller/route.js'
+import * as Auth from '../controller/auth.js'
 
 export function addEventListeners() {
     Element.menuAbout.addEventListener('click', () => {
@@ -9,5 +10,9 @@ export function addEventListeners() {
 }
 
 export function about_page() {
+    if (!Auth.currentUser) {
+        Element.root.innerHTML = '<h1>Access not allowed.</h1>'
+        return;
+    }
     Element.root.innerHTML = '<h1>About Page</h1>';
 }
