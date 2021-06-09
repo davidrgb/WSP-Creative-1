@@ -6,6 +6,6 @@ export function addEventListeners() {
     });
 }
 
-function home_page() {
+export function home_page() {
     Element.root.innerHTML = '<h1>Home Page</h1>';
 }
