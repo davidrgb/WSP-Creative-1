@@ -4,6 +4,7 @@ import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Util from './util.js'
 import * as Constant from '../model/constant.js'
 import {Reply} from '../model/reply.js'
+import * as Route from '../controller/route.js'
 
 export function addViewButtonListeners() {
     const viewButtonForms = document.getElementsByClassName("thread-view-form");
@@ -16,11 +17,12 @@ export function addViewFormSubmitEvent(form) {
     form.addEventListener('submit', e => {
         e.preventDefault();
         const threadId = e.target.threadId.value;
+        history.pushState(null, null, Route.routePath.THREAD + '#' + threadId)
         thread_page(threadId);
     });
 }
 
-async function thread_page(threadId) {
+export async function thread_page(threadId) {
     if (!Auth.currentUser) {
         Element.root.innerHTML = '<h1>Protected Page</h1>'
         return
