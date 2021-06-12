@@ -65,3 +65,18 @@ export async function getReplyList(threadId) {
     
     return replies;
 }
+
+export async function searchThreads(keywordsArray) {
+    const threadList = []
+    const snapShot = await firebase.firestore()
+        .collection(Constant.collectionNames.THREADS)
+        .where('keywordsArray', 'array-contains-any', keywordsArray)
+        .orderBy('timestamp', 'desc')
+        .get();
+    snapShot.forEach(doc => {
+        const t = new Thread(doc.data());
+        t.docId = doc.id;
+        threadList.push(t)
+    });
+    return threadList;
+}

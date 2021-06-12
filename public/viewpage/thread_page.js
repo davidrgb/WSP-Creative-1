@@ -28,6 +28,11 @@ export async function thread_page(threadId) {
         return
     }
 
+    if (!threadId) {
+        Util.info('Error', 'Thread Id is null; invalid access')
+        return;
+    }
+
     let thread
     let replies
     try {

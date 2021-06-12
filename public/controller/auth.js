@@ -41,8 +41,8 @@ export function addEventListeners() {
                 elements[i].style.display = 'block';
 
             const pathname = window.location.pathname;
-            const href = window.location.href;
-            Route.routing(pathname, href);
+            const hash = window.location.hash;
+            Route.routing(pathname, hash);
         } else {
             // sign out
             currentUser = null;

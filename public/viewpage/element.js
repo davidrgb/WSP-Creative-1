@@ -4,8 +4,14 @@ export const menuHome = document.getElementById('menu-home');
 export const menuAbout = document.getElementById('menu-about');
 
 // form
+export const formSearch = document.getElementById('search-form');
 export const formSignin = document.getElementById('form-signin');
 export const formCreateThread = document.getElementById('form-create-thread');
+export const formCreateThreadError = {
+    title: document.getElementById('form-create-thread-error-title'),
+    keywords: document.getElementById('form-create-thread-error-keywords'),
+    content: document.getElementById('form-create-thread-error-content'),
+}
 
 // main content root
 export const root = document.getElementById('root');

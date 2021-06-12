@@ -15,7 +15,12 @@ export function addEventListeners() {
 
     Element.formCreateThread.addEventListener('submit', async e => {
         e.preventDefault();
-        const title = e.target.title.value;
+
+        Element.formCreateThreadError.title.innerHTML = '';
+        Element.formCreateThreadError.keywords.innerHTML = '';
+        Element.formCreateThreadError.content.innerHTML = '';
+
+        const title = e.target.title.value.trim();
         const content = e.target.content.value;
         const keywords = e.target.keywords.value;
         const uid = Auth.currentUser.uid;
@@ -25,6 +30,27 @@ export function addEventListeners() {
         const thread = new Thread({
             uid, title, content, email, timestamp, keywordsArray, 
         });
+
+        let valid = true;
+        let error = thread.validate_title();
+        if (error) {
+            valid = false;
+            Element.formCreateThreadError.title.innerHTML = error;
+        }
+        error = thread.validate_keywords();
+        if (error) {
+            valid = false;
+            Element.formCreateThreadError.keywords.innerHTML = error;
+        }
+        error = thread.validate_content();
+        if (error) {
+            valid = false;
+            Element.formCreateThreadError.content.innerHTML = error;
+        }
+
+        if (!valid) {
+            return;
+        }
 
         try {
             const docId = await FirebaseController.addThread(thread);
@@ -118,7 +144,7 @@ function buildThreadView(thread) {
             </form>
         </td>
         <td>${thread.title}</td>
-        <td>${thread.keywordsArray.join(' ')}</td>
+        <td>${!thread.keywordsArray || !Array.isArray(thread.keywordsArray) ? ' ' : thread.keywordsArray.join(' ')}</td>
         <td>${thread.email}</td>
         <td>${thread.content}</td>
         <td>${new Date(thread.timestamp).toString()}</td>
