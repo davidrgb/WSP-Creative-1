@@ -27,12 +27,14 @@ async function thread_page(threadId) {
     }
 
     let thread
+    let replies
     try {
         thread = await FirebaseController.getOneThread(threadId);
         if (!thread) {
             Util.info('Error', 'Thread does not exist');
             return;
         }
+        replies = await FirebaseController.getReplyList(threadId);
         
     } catch (e) {
         if (Constant.DEV) console.log(e);
@@ -48,7 +50,12 @@ async function thread_page(threadId) {
     `;
 
     html += '<div id="message-reply-body">'
-    html += '</div'
+    if (replies && replies.length > 0) {
+        replies.forEach(r => {
+            html += buildReplyView(r)
+        });
+    }
+    html += '</div>'
 
     html += `
         <div>
@@ -76,5 +83,22 @@ async function thread_page(threadId) {
             if (Constant.DEV) console.log(e)
             Util.info('Error', JSON.stringify(e))
         }
+
+        const replyTag = document.createElement('div')
+        replyTag.innerHTML = buildReplyView(reply)
+        document.getElementById('message-reply-body').appendChild(replyTag)
+        document.getElementById('textarea-add-new-reply').value = ''
     });
+}
+
+function buildReplyView(reply) {
+    return `
+        <div class="border border-primary">
+            <div class="bg-info text-white">
+                Replied by ${reply.email} (At ${new Date(reply.timestamp).toString()})
+            </div>
+            ${reply.content}
+        </div>
+        <hr>
+    `;
 }
