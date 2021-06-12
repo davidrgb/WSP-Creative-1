@@ -34,3 +34,7 @@ textarea {
 .form-create-thread-error{
     color: red;
 }
+
+.create-account-error {
+    color: red;
+}

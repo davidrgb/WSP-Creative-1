@@ -43,7 +43,8 @@
                 </ul>
                 <div class="modal-menus-post-auth">
                     <form id="form-search" class="d-flex">
-                        <input name="searchKeys" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <input name="searchKeys" class="form-control me-2" type="search" placeholder="Search"
+                            aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                 </div>
@@ -71,7 +72,8 @@
                             <p class="form-create-thread-error" id="form-create-thread-error-keywords"></p>
                         </div>
                         <div>
-                            <textarea name="content" cols="50" rows="5" placeholder="Enter content of the thread"></textarea>
+                            <textarea name="content" cols="50" rows="5"
+                                placeholder="Enter content of the thread"></textarea>
                             <p class="form-create-thread-error" id="form-create-thread-error-content"></p>
                         </div>
                         <div>
@@ -119,12 +121,56 @@
                         <div>
                             <button class="btn btn-outline-primary" type="submit">Sign In</button>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="root" class="bg-light p-5 m-3"></div>
+    <!-- Modal: Create account-->
+    <div class="modal fade" id="modal-create-account" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modal-create-account-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-create-account-label">Create a New Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-account">
+                        <div>
+                            <input type="email" name="email" placeholder="email-address">
+                            <p id="create-account-error-email" class="create-account-error"></p>
+                        </div>
+                        <div>
+                            <input type="password" name="password" placeholder="password">
+                            <p id="create-account-error-password" class="create-account-error"></p>
+                        </div>
+                        <div>
+                            <input type="password" name="passwordConfirm" placeholder="confirm password">
+                            <p id="create-account-error-passwordConfirm" class="create-account-error"></p>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="root" class="bg-light p-5 m-3 modal-menus-post-auth"></div>
+    <div class="modal-menus-pre-auth">
+        <h1>Welcome to Awesome Discussion Forum</h1>
+        Please sign in to do:
+        <ul>
+            <li>to create a new thread</li>
+            <li>to browse threads</li>
+            <li>to reply messages to threads</li>
+        </ul>
+        No account yet?
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-create-account">Create New Account</button>
+    </div>
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>

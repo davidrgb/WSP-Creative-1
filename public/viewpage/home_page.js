@@ -8,13 +8,20 @@ import * as Util from './util.js'
 import * as ThreadPage from './thread_page.js'
 
 export function addEventListeners() {
-    Element.menuHome.addEventListener('click', () => {
+    Element.menuHome.addEventListener('click', async () => {
         history.pushState(null, null, Route.routePath.HOME);
-        home_page();
+        const label = Util.disableButton(Element.menuHome);
+        await home_page();
+        //await Util.sleep(1000);
+        Util.enableButton(Element.menuHome, label);
     });
 
     Element.formCreateThread.addEventListener('submit', async e => {
         e.preventDefault();
+
+        const button = Element.formCreateThread.getElementsByTagName('button')[0];
+        const label = Util.disableButton(button);
+        //await Util.sleep(1000);
 
         Element.formCreateThreadError.title.innerHTML = '';
         Element.formCreateThreadError.keywords.innerHTML = '';
@@ -49,6 +56,7 @@ export function addEventListeners() {
         }
 
         if (!valid) {
+            Util.enableButton(button, label);
             return;
         }
 
@@ -72,7 +80,8 @@ export function addEventListeners() {
             if (Constant.DEV) console.log(e);
             Util.info('Failed to add', JSON.stringify(e), Element.modalCreateThread);
         }
-    });
+        Util.enableButton(button, label)
+    })
 }
 
 export async function home_page() {
@@ -87,13 +96,14 @@ export async function home_page() {
     } catch (e) {
         if (Constant.DEV) console.log(e);
         Util.info('Error to get thread list', JSON. stringify(e));
+        return;
     }
 
     buildHomeScreen(threadList);
 
 }
 
-function buildHomeScreen(threadList) {
+export function buildHomeScreen(threadList) {
     let html = ``
     html += `
         <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal-create-thread"
