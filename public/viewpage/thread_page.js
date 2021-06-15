@@ -5,6 +5,7 @@ import * as Util from './util.js'
 import * as Constant from '../model/constant.js'
 import {Reply} from '../model/reply.js'
 import * as Route from '../controller/route.js'
+import { Thread } from '../model/thread.js';
 
 export function addViewButtonListeners() {
     const viewButtonForms = document.getElementsByClassName("thread-view-form");
@@ -53,16 +54,21 @@ export async function thread_page(threadId) {
         return;
     }
 
-    let html = `
+    /*let html = `
         <h4 class="bg-primary text-white">${thread.title}</h4>
         <div>${thread.email} (At ${new Date(thread.timestamp).toString()})</div>
         <div class="bg-secondary text-white">${thread.content}</div>
         <!--<hr>-->
-    `;
+    `;*/
+
+    let html = `
+        <div id="original-thread">
+        </div>
+    `
 
     if (Auth.currentUser.uid == thread.uid) {
         html += `
-        <button id="button-edit-thread" class="btn btn-outline-info" style="margin-top: 10px">Edit</button>
+        <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-edit-thread" style="margin-top: 10px">Edit</button>
         <button id="button-delete-thread" class="btn btn-outline-danger" style="margin-top: 10px">Delete</button>
         `
     }
@@ -87,10 +93,67 @@ export async function thread_page(threadId) {
 
     Element.root.innerHTML = html;
 
+    await updateOriginalThreadBody(thread);
+
     if (Auth.currentUser.uid == thread.uid) {
         document.getElementById('button-delete-thread').addEventListener('click', async () => {
             FirebaseController.deleteThread(thread)
             Element.root.innerHTML = "Thread has been deleted."
+        })
+        Element.formEditThread.addEventListener('submit', async e => {
+            e.preventDefault();
+    
+            const button = Element.formEditThread.getElementsByTagName ('button')[0];
+            const label = Util.disableButton(button);
+    
+            Element.formEditThreadError.title.innerHTML = '';
+            Element.formEditThreadError.keywords.innerHTML = '';
+            Element.formEditThreadError.content.innerHTML = '';
+    
+            const title = e.target.title.value.trim();
+            const content = e.target.content.value;
+            const keywords = e.target.keywords.value;
+            const uid = thread.uid;
+            const email = thread.email;
+            const timestamp = Date.now();
+            const keywordsArray = keywords.toLowerCase().match(/\S+/g);
+            const editThread = new Thread({
+                uid, title, content, email, timestamp, keywordsArray, 
+            });
+
+            let valid = true;
+            let error = editThread.validate_title();
+            if (error) {
+                valid = false;
+                Element.formCreateThreadError.title.innerHTML = error;
+            }
+            error = editThread.validate_keywords();
+            if (error) {
+                valid = false;
+                Element.formCreateThreadError.keywords.innerHTML = error;
+            }
+            error = editThread.validate_content();
+            if (error) {
+                valid = false;
+                Element.formCreateThreadError.content.innerHTML = error;
+            }
+
+            if (!valid) {
+                Util.enableButton(button, label);
+                return;
+            }
+
+            try {
+                await FirebaseController.updateThread(thread, title, keywordsArray, content, timestamp);
+                await updateOriginalThreadBody(editThread);
+                e.target.reset();
+    
+                Util.info('Success', 'Thread has been edited', Element.modalEditThread);
+            } catch (e) {
+                if (Constant.DEV) console.log(e);
+                Util.info('Failed to edit', JSON.stringify(e), Element.modalCreateThread);
+            }
+            Util.enableButton(button, label)
         })
     }
 
@@ -133,4 +196,13 @@ function buildReplyView(reply) {
         </div>
         <hr>
     `;
+}
+
+async function updateOriginalThreadBody(thread) {
+    document.getElementById("original-thread").innerHTML = `
+    <h4 class="bg-primary text-white">${thread.title}</h4>
+        <div>${thread.email} (At ${new Date(thread.timestamp).toString()})</div>
+        <div class="bg-secondary text-white">${thread.content}</div>
+        <!--<hr>-->
+    `
 }

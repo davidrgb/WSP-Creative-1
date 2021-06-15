@@ -98,3 +98,15 @@ export async function deleteThread(thread) {
             .doc(thread.docId)
             .delete();
 }
+
+export async function updateThread(thread, title, keywordsArray, content, timestamp) {
+    await firebase.firestore()
+        .collection(Constant.collectionNames.THREADS)
+        .doc(thread.docId)
+        .set({
+            title: title,
+            keywordsArray: keywordsArray,
+            content: content,
+            timestamp: timestamp,
+        }, { merge: true });
+}
