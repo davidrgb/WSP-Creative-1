@@ -121,3 +121,12 @@ export async function updateThread(thread, title, keywordsArray, content, timest
             timestamp: timestamp,
         }, { merge: true });
 }
+
+export async function deleteReply(reply) {
+    await firebase.firestore()
+        .collection(Constant.collectionNames.REPLIES)
+        .doc(reply.docId)
+        .delete();
+    document.getElementById(`reply-${reply.uid}-${reply.timestamp}`).innerHTML = 'This reply has been deleted.';
+    document.getElementById(`buttons-${reply.uid}-${reply.timestamp}`).innerHTML = '';
+}
