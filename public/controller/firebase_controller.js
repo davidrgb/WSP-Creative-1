@@ -1,6 +1,8 @@
 import * as Constant from '../model/constant.js'
 import { Reply } from '../model/reply.js';
 import { Thread } from '../model/thread.js';
+import * as Element from '../viewpage/element.js';
+import * as ThreadPage from '../viewpage/thread_page.js';
 
 export async function signIn(email, password) {
     await firebase.auth().signInWithEmailAndPassword(email, password);
@@ -87,16 +89,31 @@ export async function createAccount(email, password) {
 
 export async function deleteThread(thread) {
     const replyList = await getReplyList(thread.docId)
-    for (const reply of replyList) { 
+    /*for (const reply of replyList) { 
         await firebase.firestore()
             .collection(Constant.collectionNames.REPLIES)
             .doc(reply.docId)
             .delete();
+    }*/
+    if (replyList.length == 0) {
+        await firebase.firestore()
+                .collection(Constant.collectionNames.THREADS)
+                .doc(thread.docId)
+                .delete();
+        Element.root.innerHTML = "Thread has been deleted."
+        return;
     }
-    await firebase.firestore()
-            .collection(Constant.collectionNames.THREADS)
-            .doc(thread.docId)
-            .delete();
+    await updateThread(thread, 'deleted', null, 'deleted', Date.now());
+    const title = 'deleted';
+    const content = 'deleted';
+    const uid = thread.uid;
+    const email = thread.email;
+    const timestamp = Date.now();
+    const keywordsArray = null;
+    const deletedThread = new Thread({
+        uid, title, content, email, timestamp, keywordsArray, 
+    });
+    await ThreadPage.updateOriginalThreadBody(deletedThread);
 }
 
 export async function updateThread(thread, title, keywordsArray, content, timestamp) {

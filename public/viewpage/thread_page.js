@@ -96,10 +96,7 @@ export async function thread_page(threadId) {
     await updateOriginalThreadBody(thread);
 
     if (Auth.currentUser.uid == thread.uid) {
-        document.getElementById('button-delete-thread').addEventListener('click', async () => {
-            FirebaseController.deleteThread(thread)
-            Element.root.innerHTML = "Thread has been deleted."
-        })
+        let editThread;
         Element.formEditThread.addEventListener('submit', async e => {
             e.preventDefault();
     
@@ -117,7 +114,7 @@ export async function thread_page(threadId) {
             const email = thread.email;
             const timestamp = Date.now();
             const keywordsArray = keywords.toLowerCase().match(/\S+/g);
-            const editThread = new Thread({
+            editThread = new Thread({
                 uid, title, content, email, timestamp, keywordsArray, 
             });
 
@@ -154,6 +151,11 @@ export async function thread_page(threadId) {
                 Util.info('Failed to edit', JSON.stringify(e), Element.modalCreateThread);
             }
             Util.enableButton(button, label)
+        })
+        document.getElementById('button-delete-thread').addEventListener('click', async () => {
+            await FirebaseController.deleteThread(thread)
+            //Element.root.innerHTML = "Thread has been deleted."
+            //await updateOriginalThreadBody(thread);
         })
     }
 
@@ -198,7 +200,7 @@ function buildReplyView(reply) {
     `;
 }
 
-async function updateOriginalThreadBody(thread) {
+export async function updateOriginalThreadBody(thread) {
     document.getElementById("original-thread").innerHTML = `
     <h4 class="bg-primary text-white">${thread.title}</h4>
         <div>${thread.email} (At ${new Date(thread.timestamp).toString()})</div>
