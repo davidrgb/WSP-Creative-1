@@ -57,8 +57,17 @@ export async function thread_page(threadId) {
         <h4 class="bg-primary text-white">${thread.title}</h4>
         <div>${thread.email} (At ${new Date(thread.timestamp).toString()})</div>
         <div class="bg-secondary text-white">${thread.content}</div>
-        <hr>
+        <!--<hr>-->
     `;
+
+    if (Auth.currentUser.uid == thread.uid) {
+        html += `
+        <button id="button-edit-thread" class="btn btn-outline-info" style="margin-top: 10px">Edit</button>
+        <button id="button-delete-thread" class="btn btn-outline-danger" style="margin-top: 10px">Delete</button>
+        `
+    }
+
+    html += '<hr>'
 
     html += '<div id="message-reply-body">'
     if (replies && replies.length > 0) {
@@ -77,6 +86,13 @@ export async function thread_page(threadId) {
     `;
 
     Element.root.innerHTML = html;
+
+    if (Auth.currentUser.uid == thread.uid) {
+        document.getElementById('button-delete-thread').addEventListener('click', async () => {
+            FirebaseController.deleteThread(thread)
+            Element.root.innerHTML = "Thread has been deleted."
+        })
+    }
 
     document.getElementById('button-add-new-reply').addEventListener('click', async () => {
         const content = document.getElementById('textarea-add-new-reply').value;

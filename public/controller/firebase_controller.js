@@ -84,3 +84,17 @@ export async function searchThreads(keywordsArray) {
 export async function createAccount(email, password) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
 }
+
+export async function deleteThread(thread) {
+    const replyList = await getReplyList(thread.docId)
+    for (const reply of replyList) { 
+        await firebase.firestore()
+            .collection(Constant.collectionNames.REPLIES)
+            .doc(reply.docId)
+            .delete();
+    }
+    await firebase.firestore()
+            .collection(Constant.collectionNames.THREADS)
+            .doc(thread.docId)
+            .delete();
+}
