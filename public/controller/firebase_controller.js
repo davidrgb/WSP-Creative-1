@@ -89,12 +89,6 @@ export async function createAccount(email, password) {
 
 export async function deleteThread(thread) {
     const replyList = await getReplyList(thread.docId)
-    /*for (const reply of replyList) { 
-        await firebase.firestore()
-            .collection(Constant.collectionNames.REPLIES)
-            .doc(reply.docId)
-            .delete();
-    }*/
     if (replyList.length == 0) {
         await firebase.firestore()
                 .collection(Constant.collectionNames.THREADS)

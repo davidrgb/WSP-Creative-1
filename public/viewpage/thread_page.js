@@ -54,13 +54,6 @@ export async function thread_page(threadId) {
         return;
     }
 
-    /*let html = `
-        <h4 class="bg-primary text-white">${thread.title}</h4>
-        <div>${thread.email} (At ${new Date(thread.timestamp).toString()})</div>
-        <div class="bg-secondary text-white">${thread.content}</div>
-        <!--<hr>-->
-    `;*/
-
     let html = `
         <div id="original-thread">
         </div>
@@ -154,8 +147,6 @@ export async function thread_page(threadId) {
         })
         document.getElementById('button-delete-thread').addEventListener('click', async () => {
             await FirebaseController.deleteThread(thread)
-            //Element.root.innerHTML = "Thread has been deleted."
-            //await updateOriginalThreadBody(thread);
         })
     }
 
