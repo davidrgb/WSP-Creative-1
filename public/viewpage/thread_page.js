@@ -28,6 +28,7 @@ export function addViewFormSubmitEvent(form) {
 }
 
 export async function thread_page(threadId) {
+    let currentReply
     if (!Auth.currentUser) {
         Element.root.innerHTML = '<h1>Protected Page</h1>'
         return
@@ -115,17 +116,17 @@ export async function thread_page(threadId) {
             let error = editThread.validate_title();
             if (error) {
                 valid = false;
-                Element.formCreateThreadError.title.innerHTML = error;
+                Element.formEditThreadError.title.innerHTML = error;
             }
             error = editThread.validate_keywords();
             if (error) {
                 valid = false;
-                Element.formCreateThreadError.keywords.innerHTML = error;
+                Element.formEditThreadError.keywords.innerHTML = error;
             }
             error = editThread.validate_content();
             if (error) {
                 valid = false;
-                Element.formCreateThreadError.content.innerHTML = error;
+                Element.formEditThreadError.content.innerHTML = error;
             }
 
             if (!valid) {
@@ -151,11 +152,57 @@ export async function thread_page(threadId) {
     }
 
     for (const reply of replies) {
-        /*if (Auth.currentUser.uid == reply.uid) {
-            document.getElementById(`button-delete-reply-${reply.uid}-${reply.timestamp}`).addEventListener('click', async () => {
-                await FirebaseController.deleteReply(reply);
+        if (Auth.currentUser.uid == reply.uid) {
+            let replyId = `button-edit-reply-${reply.uid}-${reply.timestamp}`
+            document.getElementById(replyId).addEventListener('click', async () => {
+                //currentReply = reply;
+                Element.formEditReply.addEventListener('submit', async e => {
+                    e.preventDefault();
+            
+                    const button = Element.formEditReply.getElementsByTagName ('button')[0];
+                    const label = Util.disableButton(button);
+            
+                    Element.formEditReplyError.content.innerHTML = '';
+
+                    const originalTimestamp = reply.timestamp;
+            
+                    const threadId = reply.threadId;
+                    const content = e.target.content.value;
+                    const uid = reply.uid;
+                    const email = reply.email;
+                    const timestamp = Date.now();
+                    const editReply = new Reply({
+                        uid, email, timestamp, content, threadId,
+                    });
+        
+                    let valid = true;
+                    let error = editReply.validate_reply();
+                    if (error) {
+                        valid = false;
+                        Element.formEditReplyError.content.innerHTML = error;
+                    }
+        
+                    if (!valid) {
+                        Util.enableButton(button, label);
+                        return;
+                    }
+        
+                    try {
+                        await FirebaseController.updateReply(reply, content, timestamp);
+                        await updateOriginalReplyBody(editReply, originalTimestamp);
+                        e.target.reset();
+            
+                        Util.info('Success', 'Reply has been edited', Element.modalEditReply);
+                    } catch (e) {
+                        if (Constant.DEV) console.log(e);
+                        Util.info('Failed to edit', JSON.stringify(e), Element.modalEditReply);
+                    }
+                    Util.enableButton(button, label)
+                })
             })
-        }*/
+
+            
+        }
         addDeleteReplyListener(reply);
     }
 
@@ -203,7 +250,7 @@ function buildReplyView(reply) {
     if (Auth.currentUser.uid == reply.uid) {
         html += `
         <div id="buttons-${reply.uid}-${reply.timestamp}">
-            <!--<button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-edit-thread" style="margin-top: 10px">Edit</button>-->
+            <button id="button-edit-reply-${reply.uid}-${reply.timestamp}" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-edit-reply" style="margin-top: 10px">Edit</button>
             <button id="button-delete-reply-${reply.uid}-${reply.timestamp}" class="btn btn-outline-danger" style="margin-top: 10px">Delete</button>
         </div>
         `
@@ -227,4 +274,14 @@ async function addDeleteReplyListener(reply) {
             await FirebaseController.deleteReply(reply);
         })
     }
+}
+
+export async function updateOriginalReplyBody(reply, originalTimestamp) {
+    let replyId = `reply-${reply.uid}-${originalTimestamp}`
+    document.getElementById(replyId).innerHTML = `
+        <div class="bg-info text-white">
+                    Replied by ${reply.email} (At ${new Date(reply.timestamp).toString()})
+                </div>
+                ${reply.content}
+    `
 }

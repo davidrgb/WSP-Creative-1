@@ -205,6 +205,31 @@
         </div>
     </div>
 
+    <!-- Modal: edit reply form -->
+    <div class="modal fade" id="modal-edit-reply" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modal-edit-reply-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-edit-reply-label">Edit Reply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-edit-reply">
+                        <div>
+                            <textarea name="content" cols="50" rows="5"
+                                placeholder="Enter content of the thread"></textarea>
+                            <p class="form-reply-thread-error" id="form-reply-thread-error-content"></p>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-primary">Edit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->

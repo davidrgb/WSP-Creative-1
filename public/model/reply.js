@@ -16,4 +16,9 @@ export class Reply {
             content: this.content,
         }
     }
+
+    validate_reply() {
+        if (this.content && this.content.length > 4) return null;
+        return 'invalid: min length should be 5';
+    }
 }

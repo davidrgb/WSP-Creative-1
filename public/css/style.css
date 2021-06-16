@@ -38,3 +38,11 @@ textarea {
 .create-account-error {
     color: red;
 }
+
+.form-edit-thread-error{
+    color: red;
+}
+
+.form-edit-reply-error{
+    color: red;
+}

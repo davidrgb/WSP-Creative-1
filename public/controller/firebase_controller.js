@@ -3,6 +3,8 @@ import { Reply } from '../model/reply.js';
 import { Thread } from '../model/thread.js';
 import * as Element from '../viewpage/element.js';
 import * as ThreadPage from '../viewpage/thread_page.js';
+import * as Auth from '../controller/auth.js';
+
 
 export async function signIn(email, password) {
     await firebase.auth().signInWithEmailAndPassword(email, password);
@@ -129,4 +131,16 @@ export async function deleteReply(reply) {
         .delete();
     document.getElementById(`reply-${reply.uid}-${reply.timestamp}`).innerHTML = 'This reply has been deleted.';
     document.getElementById(`buttons-${reply.uid}-${reply.timestamp}`).innerHTML = '';
+}
+
+export async function updateReply(reply, content, timestamp) {
+    if (Auth.currentUser.uid == reply.uid) {
+        await firebase.firestore()
+            .collection(Constant.collectionNames.REPLIES)
+            .doc(reply.docId)
+            .set({
+                content: content,
+                timestamp: timestamp,
+            }, { merge: true });
+    }
 }
