@@ -24,10 +24,10 @@ export const formEditThreadError = {
     keywords: document.getElementById('form-edit-thread-error-keywords'),
     content: document.getElementById('form-edit-thread-error-content'),
 }
-export const formEditReply = document.getElementById('form-edit-reply');
-export const formEditReplyError = {
+//export const formEditReply = document.getElementById('form-edit-reply');
+/*export const formEditReplyError = {
     content: document.getElementById('form-reply-thread-error-content'),
-}
+}*/
 
 // main content root
 export const root = document.getElementById('root');
@@ -41,4 +41,4 @@ export const modalCreateAccount = new bootstrap.Modal(document.getElementById('m
 
 export const modalCreateThread = new bootstrap.Modal(document.getElementById('modal-create-thread'), {backdrop: 'static'});
 export const modalEditThread = new bootstrap.Modal(document.getElementById('modal-edit-thread'), {backdrop: 'static'});
-export const modalEditReply = new bootstrap.Modal(document.getElementById('modal-edit-reply'), {backdrop: 'static'});
+//export const modalEditReply = new bootstrap.Modal(document.getElementById('modal-edit-reply'), {backdrop: 'static'});

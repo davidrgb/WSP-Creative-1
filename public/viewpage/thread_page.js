@@ -152,7 +152,7 @@ export async function thread_page(threadId) {
     }
 
     for (const reply of replies) {
-        if (Auth.currentUser.uid == reply.uid) {
+        /*if (Auth.currentUser.uid == reply.uid) {
             let replyId = `button-edit-reply-${reply.uid}-${reply.timestamp}`
             document.getElementById(replyId).addEventListener('click', async () => {
                 currentReply = reply;
@@ -166,7 +166,7 @@ export async function thread_page(threadId) {
 
                     /*if (Auth.currentUser.uid == reply.uid) {
                         let originalTimestamp = reply.timestamp;
-                    }*/
+                    }
                     let originalTimestamp = currentReply.timestamp;
             
                     const threadId = currentReply.threadId;
@@ -205,7 +205,7 @@ export async function thread_page(threadId) {
             })
 
             
-        }
+        }*/
         addDeleteReplyListener(reply);
     }
 
@@ -253,7 +253,7 @@ function buildReplyView(reply) {
     if (Auth.currentUser.uid == reply.uid) {
         html += `
         <div id="buttons-${reply.uid}-${reply.timestamp}">
-            <button id="button-edit-reply-${reply.uid}-${reply.timestamp}" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-edit-reply" style="margin-top: 10px">Edit</button>
+            <!--<button id="button-edit-reply-${reply.uid}-${reply.timestamp}" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-edit-reply" style="margin-top: 10px">Edit</button>-->
             <button id="button-delete-reply-${reply.uid}-${reply.timestamp}" class="btn btn-outline-danger" style="margin-top: 10px">Delete</button>
         </div>
         `
@@ -279,7 +279,7 @@ async function addDeleteReplyListener(reply) {
     }
 }
 
-export async function updateOriginalReplyBody(reply, originalTimestamp) {
+/*export async function updateOriginalReplyBody(reply, originalTimestamp) {
     let replyId = `reply-${reply.uid}-${originalTimestamp}`
     document.getElementById(replyId).innerHTML = `
         <div class="bg-info text-white">
@@ -287,4 +287,4 @@ export async function updateOriginalReplyBody(reply, originalTimestamp) {
                 </div>
                 ${reply.content}
     `
-}
+}*/
