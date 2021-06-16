@@ -155,7 +155,7 @@ export async function thread_page(threadId) {
         if (Auth.currentUser.uid == reply.uid) {
             let replyId = `button-edit-reply-${reply.uid}-${reply.timestamp}`
             document.getElementById(replyId).addEventListener('click', async () => {
-                //currentReply = reply;
+                currentReply = reply;
                 Element.formEditReply.addEventListener('submit', async e => {
                     e.preventDefault();
             
@@ -164,12 +164,15 @@ export async function thread_page(threadId) {
             
                     Element.formEditReplyError.content.innerHTML = '';
 
-                    const originalTimestamp = reply.timestamp;
+                    /*if (Auth.currentUser.uid == reply.uid) {
+                        let originalTimestamp = reply.timestamp;
+                    }*/
+                    let originalTimestamp = currentReply.timestamp;
             
-                    const threadId = reply.threadId;
+                    const threadId = currentReply.threadId;
                     const content = e.target.content.value;
-                    const uid = reply.uid;
-                    const email = reply.email;
+                    const uid = currentReply.uid;
+                    const email = currentReply.email;
                     const timestamp = Date.now();
                     const editReply = new Reply({
                         uid, email, timestamp, content, threadId,
@@ -188,7 +191,7 @@ export async function thread_page(threadId) {
                     }
         
                     try {
-                        await FirebaseController.updateReply(reply, content, timestamp);
+                        await FirebaseController.updateReply(currentReply, content, timestamp);
                         await updateOriginalReplyBody(editReply, originalTimestamp);
                         e.target.reset();
             
